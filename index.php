@@ -14,7 +14,7 @@
 
 <body>
   <?php include 'nav.php'; ?>
-  <main class=" container  h-screen 	mx-auto my-10">
+  <main class=" container  min-h-screen 	mx-auto my-10">
     <div class="flex   justify-between flex-row items-center	flex-wrap	content-center 	">
       <div class=" p-5 flex flex-col  flex-wrap m-5 h-96 items-center	content-center justify-center">
         <p>
@@ -33,7 +33,7 @@
       <hr class="w-24 bg-cyan-600  h-1 my-5">
       <h3 class=" text-2xl "> My Services </h3>
     </div>
-    <div class="my-5 flex flex-row justify-center gap-5">
+    <div class="m-5 flex flex-row justify-center gap-5">
 
           <?php
           $data = [
