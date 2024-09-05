@@ -1,3 +1,69 @@
+<?php
+require 'vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+include 'config.php'; 
+
+$messageStatus = ''; // To store the alert message
+$alertClass = '';    // To store the alert color
+$formSubmitted = false; // Flag to check if the form has been submitted
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $firstName = htmlspecialchars($_POST['first_name']);
+    $lastName = htmlspecialchars($_POST['last_name']);
+    $subject = htmlspecialchars($_POST['subject']);
+    $email = htmlspecialchars($_POST['email']);
+    $message = htmlspecialchars($_POST['message']);
+
+    // Setting PHPMailer
+    $mail = new PHPMailer(true);
+
+    try {
+        // SMTP Server Settings
+        $mail->isSMTP();
+        $mail->Host       = 'smtp-mail.outlook.com'; // SMTP server for service provider
+        $mail->SMTPAuth   = true;
+        $mail->Username   = SMTP_USER; // Your email
+        $mail->Password   = SMTP_PASS; //mail password    
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587; // SMTP port for TLS
+
+        // Email Settings
+        $mail->setFrom('test.codeigniter4@outlook.com', "$firstName $lastName");
+        $mail->addAddress('test.codeigniter4@outlook.com'); // Who will the mail be sent to?
+        $mail->addReplyTo($email);
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = "New message from $firstName $lastName: $subject";
+        $mail->Body    = "
+            <h3>New message</h3>
+            <p><strong>Name:</strong> $firstName $lastName</p>
+            <p><strong>Email:</strong> $email</p>
+            <p><strong>Subject:</strong> $subject</p>
+            <p><strong>Message:</strong><br>$message</p>
+        ";
+
+        // Send Email
+        $mail->send();
+        $messageStatus = 'Message sent successfully!';
+        $alertClass = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative';
+        $formSubmitted = true; // Set flag to true when the form is submitted successfully
+    } catch (Exception $e) {
+        $messageStatus = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        $alertClass = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative';
+        $formSubmitted = true; // Set flag to true when the form submission fails
+    }
+      
+}
+
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -46,6 +112,18 @@
         
       <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
     </form>
+    <!-- Displaying message alert only if form is submitted -->
+    <?php if ($formSubmitted): ?>
+    <script>
+        window.onload = function() {
+            <?php if ($alertClass == 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative'): ?>
+                alert("<?php echo $messageStatus; ?>");
+            <?php else: ?>
+                alert("<?php echo $messageStatus; ?>");
+            <?php endif; ?>
+        };
+    </script>
+<?php endif; ?>
 
   </main>
 
@@ -55,61 +133,4 @@
 
 </html>
 
-<?php
-require 'vendor/autoload.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
- include 'config.php'; 
-
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $firstName = htmlspecialchars($_POST['first_name']);
-    $lastName = htmlspecialchars($_POST['last_name']);
-    $subject = htmlspecialchars($_POST['subject']);
-    $email = htmlspecialchars($_POST['email']);
-    $message = htmlspecialchars($_POST['message']);
-
-    // Setting PHPMailer
-    $mail = new PHPMailer(true);
-
-    try {
-        // SMTP Server Settings
-        $mail->isSMTP();
-        $mail->Host       = 'smtp-mail.outlook.com'; // SMTP server for service provider
-        $mail->SMTPAuth   = true;
-        $mail->Username   = SMTP_USER; // Your email
-        $mail->Password   = SMTP_PASS; //mail password    
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587; // SMTP port for TLS
-
-        // Email Settings
-        $mail->setFrom('test.codeigniter4@outlook.com', "$firstName $lastName");
-        $mail->addAddress('test.codeigniter4@outlook.com'); // Who will the mail be sent to?
-        $mail->addReplyTo($email);
-
-        // Content
-        $mail->isHTML(true);
-        $mail->Subject = "New message from $firstName $lastName: $subject";
-        $mail->Body    = "
-            <h3>New message</h3>
-            <p><strong>Name:</strong> $firstName $lastName</p>
-            <p><strong>Email:</strong> $email</p>
-            <p><strong>Subject:</strong> $subject</p>
-            <p><strong>Message:</strong><br>$message</p>
-        ";
-
-        // Send Email
-        $mail->send();
-        echo 'Message sent successfully!';
-    } catch (Exception $e) {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-    }
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  var_dump($_POST);
-}
-
-?>
