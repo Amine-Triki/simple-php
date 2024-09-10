@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amine Triki</title>
+  <title>Amine Triki -- contact</title>
   <meta name="description" content="amine triki web site">
   <meta name="keywords" content="amine triki , front end">
   <meta name="robots" content="index, follow">
@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
   <?php include 'nav.php'; ?>
 
-  <main class=" container  min-h-screen 	mx-auto my-10">
+  <main class="container mx-auto my-10">
 
     <form class="p-20"  action="" method="POST">
       <div class="grid gap-6 mb-6 md:grid-cols-2">
